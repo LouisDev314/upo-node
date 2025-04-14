@@ -3,7 +3,8 @@ import 'dotenv/config';
 
 const env = {
   port: process.env.PORT || '3000',
-  env: process.env.DEPLOY_ENV || 'dev',
+  nodeEnv: process.env.NODE_ENV || 'dev',
+  logLevel: process.env.LOG_LEVEL || 'info',
   mongodbUrl: process.env.MONGODB_URL || '',
   mongodbUsername: process.env.MONGODB_USERNAME || '',
   mongodbPassword: process.env.MONGODB_PASSWORD || '',

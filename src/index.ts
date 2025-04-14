@@ -2,14 +2,15 @@ import express from 'express';
 import cors from 'cors';
 // import passport from 'passport';
 import responser from 'responser';
+import morgan from 'morgan';
 import { Server } from 'http';
+import logger from './services/logger';
 import { mongoInit, mongoStop } from './services/mongodb';
 import { getRedisInstance, redisInit, redisStop } from './services/redis';
 
 import rootRouter from './routes';
 import { getEnvConfig } from './config/env';
 import exceptionHandler from './middleware/exception-handler';
-// import useJwtStrategy from './services/auth/jwt-auth';
 
 /* -------------------------Setup variables------------------------- */
 const { port } = getEnvConfig();
@@ -19,6 +20,11 @@ let server: Server;
 /* -------------------------Setup Express middleware------------------------- */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+if (getEnvConfig().nodeEnv !== 'prod') {
+  app.use(morgan('dev', {
+    skip: (req) => req.url.includes('/health-check'),
+  }));
+}
 // TODO: set up cors options: app.use(cors(corsOptions));
 app.use(cors());
 app.use(responser);
@@ -36,7 +42,7 @@ const init = async () => {
   try {
     await applicationBootstrap();
     server = app.listen(port, () => {
-      console.log('Server started');
+      logger.info(`Server started at port: ${port}`);
     });
   } catch (err) {
     console.error('Failed to init server', err);
@@ -45,7 +51,7 @@ const init = async () => {
 };
 
 const shutdown = async () => {
-  console.log('Gracefully shutting down...');
+  logger.info('Received kill signal, shutting down gracefully...');
   try {
     await Promise.race([
       new Promise<void>((resolve, reject) => {
@@ -60,7 +66,7 @@ const shutdown = async () => {
         }, 10000);
       }),
     ]);
-    console.info('Server down successfully');
+    logger.info('Server down successfully');
     process.exit(0);
   } catch (err) {
     console.error(err);

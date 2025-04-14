@@ -1,9 +1,10 @@
 import { connect, disconnect } from 'mongoose';
 import { getEnvConfig } from '../../config/env';
+import logger from '../logger';
 
 const connectUrl =
     getEnvConfig().mongodbUrl ||
-    `mongodb+srv://${getEnvConfig().mongodbUsername}:${getEnvConfig().mongodbPassword}@${getEnvConfig().mongodbHost}/${getEnvConfig().env}`;
+    `mongodb+srv://${getEnvConfig().mongodbUsername}:${getEnvConfig().mongodbPassword}@${getEnvConfig().mongodbHost}/${getEnvConfig().nodeEnv}`;
 
 export const mongoInit = async () => {
   try {
@@ -12,15 +13,15 @@ export const mongoInit = async () => {
       maxIdleTimeMS: 10000,
       maxPoolSize: getEnvConfig().mongodbPoolSize,
     });
-    console.log('Connected to MongoDB');
+    logger.info('Connected to MongoDB');
     return mongoose.connection.db;
   } catch (err) {
-    console.error('Connection to MongoDB failed', { url: connectUrl, err });
+    logger.error('Connection to MongoDB failed', { url: connectUrl, err });
     throw err;
   }
 };
 
 export const mongoStop = async () => {
   await disconnect();
-  console.log('Disconnected from MongoDB ');
+  logger.info('Disconnected from MongoDB ');
 };
