@@ -1,0 +1,13 @@
+.github/
+node_modules/
+dist/
+.env
+
+# debug file
+.vscode/launch.json
+
+npm-debug.log
+Dockerfile
+docker-compose.yml
+.git/
+.gitignore

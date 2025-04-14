@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    # TODO: add environment with initdb_root username and password for security reason
+    restart: always
+
+  redis:
+    image: redis:7.0
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"] # Enable persistence for Redis
+    restart: always
+
+volumes:
+  mongodb_data:
+  redis_data:
