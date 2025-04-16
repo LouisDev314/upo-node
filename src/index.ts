@@ -11,6 +11,8 @@ import { getRedisInstance, redisInit, redisStop } from './services/redis';
 import rootRouter from './routes';
 import { getEnvConfig } from './config/env';
 import exceptionHandler from './middleware/exception-handler';
+import { initWithCluster } from './services/cluster';
+import * as process from 'node:process';
 
 /* -------------------------Setup variables------------------------- */
 const { port } = getEnvConfig();
@@ -42,16 +44,16 @@ const init = async () => {
   try {
     await applicationBootstrap();
     server = app.listen(port, () => {
-      logger.info(`Server started at port: ${port}`);
+      logger.info(`${process.pid} started at port ${port}`);
     });
   } catch (err) {
-    console.error('Failed to init server', err);
+    console.error(`${process.pid} failed to init server`, err);
     throw err;
   }
 };
 
+/* -------------------------Graceful Shutdown------------------------- */
 const shutdown = async () => {
-  logger.info('Received kill signal, shutting down gracefully...');
   try {
     await Promise.race([
       new Promise<void>((resolve, reject) => {
@@ -66,7 +68,7 @@ const shutdown = async () => {
         }, 10000);
       }),
     ]);
-    logger.info('Server down successfully');
+    logger.info(`${process.pid} down successfully`);
     process.exit(0);
   } catch (err) {
     console.error(err);
@@ -74,11 +76,5 @@ const shutdown = async () => {
   }
 };
 
-/* -------------------------Graceful Shutdown------------------------- */
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
-
-/* -------------------------Failed Init------------------------- */
-init().catch(() => {
-  process.abort();
-});
+/* -------------------------Cluster------------------------- */
+initWithCluster(init, shutdown, getEnvConfig().numWorkers);

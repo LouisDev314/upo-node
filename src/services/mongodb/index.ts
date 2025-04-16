@@ -13,15 +13,15 @@ export const mongoInit = async () => {
       maxIdleTimeMS: 10000,
       maxPoolSize: getEnvConfig().mongodbPoolSize,
     });
-    logger.info('Connected to MongoDB');
+    logger.info(`${process.pid} connected to MongoDB`);
     return mongoose.connection.db;
   } catch (err) {
-    logger.error('Connection to MongoDB failed', { url: connectUrl, err });
+    logger.error(`${process.pid} connection to MongoDB failed`, { url: connectUrl, err });
     throw err;
   }
 };
 
 export const mongoStop = async () => {
   await disconnect();
-  logger.info('Disconnected from MongoDB ');
+  logger.info(`${process.pid} disconnected from MongoDB `);
 };

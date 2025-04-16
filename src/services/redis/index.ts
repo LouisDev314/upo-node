@@ -1,6 +1,7 @@
 import Redis from 'ioredis';
 import { getEnvConfig } from '../../config/env';
 import logger from '../logger';
+import * as process from 'node:process';
 
 let redis: Redis | null = null;
 
@@ -27,14 +28,14 @@ export const redisInit = async () => {
       process.exit(-1);
     });
 
-    logger.info('Connected to Redis');
+    logger.info(`${process.pid} connected to Redis`);
   } catch (err) {
-    logger.error('Connection to Redis failed', { url: connectUrl, err });
+    logger.error(`{process.pid} connection to Redis failed`, { url: connectUrl, err });
     throw err;
   }
 };
 
 export const redisStop = (client: Redis) => {
   client.disconnect();
-  logger.info('Disconnected from Redis');
+  logger.info(`${process.pid} disconnected from Redis`);
 };

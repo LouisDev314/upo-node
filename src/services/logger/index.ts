@@ -14,6 +14,7 @@ const levels = {
 
 const format = winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.align(),
     winston.format.printf(({ timestamp, level, message }) => {
       return `[${level.toUpperCase()}] ${timestamp} ${message}`;
     }),

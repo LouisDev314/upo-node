@@ -1,10 +1,12 @@
 import 'dotenv/config';
+import * as process from 'node:process';
 // import { IEnvConfig } from '../interfaces/env-config';
 
 const env = {
   port: process.env.PORT || '3000',
   nodeEnv: process.env.NODE_ENV || 'dev',
   logLevel: process.env.LOG_LEVEL || 'info',
+  numWorkers: Number(process.env.NUM_Workers) || 0,
   mongodbUrl: process.env.MONGODB_URL || '',
   mongodbUsername: process.env.MONGODB_USERNAME || '',
   mongodbPassword: process.env.MONGODB_PASSWORD || '',
