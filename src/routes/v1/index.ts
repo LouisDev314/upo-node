@@ -6,7 +6,6 @@ import express from 'express';
 
 const v1Router = express.Router();
 
-// v1Router.use('/health', healthRouter);
 // v1Router.use('/auth', authRouter);
 // v1Router.use('/user', userRouter);
 // v1Router.use('/project', projectRouter);
