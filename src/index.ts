@@ -5,6 +5,7 @@ import responser from 'responser';
 import morgan from 'morgan';
 import { Server } from 'http';
 import logger from './services/logger';
+import './entities'; // call extendZod
 import { mongoInit, mongoStop } from './services/mongodb';
 import { getRedisInstance, redisInit, redisStop } from './services/redis';
 
@@ -12,7 +13,8 @@ import rootRouter from './routes';
 import { getEnvConfig } from './config/env';
 import exceptionHandler from './middleware/exception-handler';
 import { initWithCluster } from './services/cluster';
-import * as process from 'node:process';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 /* -------------------------Setup variables------------------------- */
 const { port } = getEnvConfig();
@@ -24,11 +26,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 if (getEnvConfig().nodeEnv !== 'prod') {
   app.use(morgan('dev', {
-    skip: (req) => req.url.includes('/health-check'),
+    skip: (req) => req.url.includes('/health'),
   }));
 }
-// TODO: set up cors options: app.use(cors(corsOptions));
-app.use(cors());
+app.use(cors()); // TODO: set up cors options: app.use(cors(corsOptions));
+app.use(helmet()); // Enable security headers
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: 'draft-8', // Use IETF RateLimit header
+  legacyHeaders: false, // Disable X-RateLimit-* headers
+  message: 'Too many requests, please try again later.', // default HTTP status code is 429 after limit is reached
+});
+app.use(limiter);
 app.use(responser);
 // app.use(passport.initialize());
 

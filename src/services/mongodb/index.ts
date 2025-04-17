@@ -2,14 +2,13 @@ import { connect, disconnect } from 'mongoose';
 import { getEnvConfig } from '../../config/env';
 import logger from '../logger';
 
-const connectUrl =
-    getEnvConfig().mongodbUrl ||
-    `mongodb+srv://${getEnvConfig().mongodbUsername}:${getEnvConfig().mongodbPassword}@${getEnvConfig().mongodbHost}/${getEnvConfig().nodeEnv}`;
+const connectUrl = getEnvConfig().mongodbUrl;
 
 export const mongoInit = async () => {
   try {
     const mongoose = await connect(connectUrl, {
       autoCreate: false,
+      serverSelectionTimeoutMS: 5000,
       maxIdleTimeMS: 10000,
       maxPoolSize: getEnvConfig().mongodbPoolSize,
     });

@@ -1,22 +1,17 @@
 import 'dotenv/config';
-import * as process from 'node:process';
-// import { IEnvConfig } from '../interfaces/env-config';
 
 const env = {
   port: process.env.PORT || '3000',
   nodeEnv: process.env.NODE_ENV || 'dev',
   logLevel: process.env.LOG_LEVEL || 'info',
+  saltRounds: Number(process.env.SALT_ROUNDS) || 10,
   numWorkers: Number(process.env.NUM_Workers) || 0,
   mongodbUrl: process.env.MONGODB_URL || '',
-  mongodbUsername: process.env.MONGODB_USERNAME || '',
-  mongodbPassword: process.env.MONGODB_PASSWORD || '',
   mongodbPoolSize: Number(process.env.MONGODB_POOL_SIZE) || 100,
-  mongodbHost: process.env.MONGODB_HOST || '',
-  debugMode: process.env.DEBUG_MODE || 'true',
-  accessKey: process.env.ACCESS_KEY || '',
-  refreshKey: process.env.REFRESH_KEY || '',
-  accessExp: process.env.ACCESS_EXP || '',
-  refreshExp: process.env.REFRESH_EXP || '',
+  accessTokenSecret: process.env.ACCESS_TOKEN_SECRET || '',
+  refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET || '',
+  accessTokenExpiry: process.env.ACCESS_TOKEN_EXPIRY || '',
+  refreshTokenExpiry: process.env.REFRESH_TOKEN_EXPIRY || '',
   redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
   redisTokenTTL: Number(process.env.REDIS_TOKEN_TTL) || 0,
   smtpKey: process.env.SMTP_KEY || '',

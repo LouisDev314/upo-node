@@ -1,7 +1,6 @@
 import Redis from 'ioredis';
 import { getEnvConfig } from '../../config/env';
 import logger from '../logger';
-import * as process from 'node:process';
 
 let redis: Redis | null = null;
 

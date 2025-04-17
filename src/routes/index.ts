@@ -6,7 +6,7 @@ const rootRouter = express.Router();
 rootRouter.get('/health', (req, res) => {
   res.send_ok('Healthy', {
     uptime: process.uptime(),
-    timestamp: new Date(),
+    timestamp: Date.now(),
   });
 });
 
