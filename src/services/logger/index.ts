@@ -53,7 +53,7 @@ const logger = winston.createLogger({
   format,
   transports: [
     errorFileTransport, // Error logs
-    consoleTransport,   // Console output
+    consoleTransport, // Console output
   ],
 });
 

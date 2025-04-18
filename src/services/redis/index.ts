@@ -4,7 +4,7 @@ import logger from '../logger';
 
 let redis: Redis | null = null;
 
-const connectUrl = getEnvConfig().redisUrl || 'redis://:password@localhost:6379';
+const connectUrl = getEnvConfig().redisUrl;
 
 export const getRedisInstance = () => {
   if (!redis) {
@@ -29,7 +29,7 @@ export const redisInit = async () => {
 
     logger.info(`${process.pid} connected to Redis`);
   } catch (err) {
-    logger.error(`{process.pid} connection to Redis failed`, { url: connectUrl, err });
+    logger.error('{process.pid} connection to Redis failed', { url: connectUrl, err });
     throw err;
   }
 };

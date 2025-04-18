@@ -3,6 +3,8 @@ import Exception from '../errors/Exception';
 import { HttpStatusCode } from 'axios';
 import logger from '../services/logger';
 
+// WARNING: Do not delete next in request param
+// eslint-disable-next-line
 const exceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof Exception) {
     switch (err.code) {

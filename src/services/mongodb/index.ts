@@ -1,10 +1,11 @@
 import { connect, disconnect } from 'mongoose';
+import { Db } from 'mongodb';
 import { getEnvConfig } from '../../config/env';
 import logger from '../logger';
 
 const connectUrl = getEnvConfig().mongodbUrl;
 
-export const mongoInit = async () => {
+export const mongoInit = async (): Promise<Db | undefined> => {
   try {
     const mongoose = await connect(connectUrl, {
       autoCreate: false,

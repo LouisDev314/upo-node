@@ -5,10 +5,9 @@ import responser from 'responser';
 import morgan from 'morgan';
 import { Server } from 'http';
 import logger from './services/logger';
-import './entities'; // call extendZod
 import { mongoInit, mongoStop } from './services/mongodb';
 import { getRedisInstance, redisInit, redisStop } from './services/redis';
-
+import './entities'; // call extendZod
 import rootRouter from './routes';
 import { getEnvConfig } from './config/env';
 import exceptionHandler from './middleware/exception-handler';
@@ -25,9 +24,11 @@ let server: Server;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 if (getEnvConfig().nodeEnv !== 'prod') {
-  app.use(morgan('dev', {
-    skip: (req) => req.url.includes('/health'),
-  }));
+  app.use(
+    morgan('dev', {
+      skip: (req) => req.url.includes('/health'),
+    }),
+  );
 }
 app.use(cors()); // TODO: set up cors options: app.use(cors(corsOptions));
 app.use(helmet()); // Enable security headers

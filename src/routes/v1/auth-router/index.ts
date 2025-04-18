@@ -1,18 +1,18 @@
-import express from 'express';
+import { Router } from 'express';
 import { loginBodyValidation, registerBodyValidation } from '../../../middleware/auth/user-body-validation';
 import { login, register } from '../../../services/auth';
 
-const authRouter = express.Router();
+const authRouter: Router = Router();
 
 authRouter.post('/register', registerBodyValidation, async (req, res) => {
   await register(req.body);
-  // TODO: login
-  return res.send_ok('Logged in successfully');
+  const tokens = await login(req.body);
+  return res.send_ok('Logged in successfully', tokens);
 });
 
 authRouter.post('/login', loginBodyValidation, async (req, res) => {
-  const token = await login(req.body);
-  return res.send_ok('Logged in successfully', token);
+  const tokens = await login(req.body);
+  return res.send_ok('Logged in successfully', tokens);
 });
 
 export default authRouter;

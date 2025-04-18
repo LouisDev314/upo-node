@@ -1,7 +1,7 @@
-import express from 'express';
+import { Router } from 'express';
 import v1Router from './v1';
 
-const rootRouter = express.Router();
+const rootRouter: Router = Router();
 
 rootRouter.get('/health', (req, res) => {
   res.send_ok('Healthy', {

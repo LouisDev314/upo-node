@@ -1,6 +1,13 @@
 import { getEnvConfig } from '../../../config/env';
-import { IUser } from '../../../entities/user';
 import jwt from 'jsonwebtoken';
+import Exception from '../../../errors/Exception';
+import { HttpStatusCode } from 'axios';
+import { getRedisInstance } from '../../redis';
+
+interface ITokens {
+  accessToken: string;
+  refreshToken: string;
+}
 
 interface ITokenPayload {
   sub: string; // user id
@@ -10,14 +17,45 @@ interface ITokenPayload {
   // add other claims as needed (e.g., iss, aud)
 }
 
-const { accessTokenSecret, accessTokenExpiry, refreshTokenSecret, refreshTokenExpiry } = getEnvConfig();
+const { accessSecret, accessExpiry, refreshSecret, refreshExpiry } = getEnvConfig();
 
-export const generateAccessToken = async (user: IUser) => {
-  const tokenPayload: ITokenPayload = { ...user, sub: user._id.toString() };
-  // @ts-ignore FIXME
-  return jwt.sign(
-      tokenPayload,
-      accessTokenSecret,
-      { expiresIn: accessTokenExpiry },
-  );
+// FIXME
+export const generateTokens = (tokenPayload: ITokenPayload) => {
+  return {
+    // @ts-ignore
+    accessToken: jwt.sign(tokenPayload, accessSecret, { expiresIn: accessExpiry }),
+    // @ts-ignore
+    refreshToken: jwt.sign(tokenPayload, refreshSecret, { expiresIn: refreshExpiry }),
+  };
+};
+
+export const storeRefreshToken = async (userId: string, token: string) => {
+  const redis = getRedisInstance();
+  await redis.set(`${userId}:${token}`, 'valid', 'EX', getEnvConfig().redisTokenTTL);
+};
+
+export const verifyRedisToken = async (userId: string, token: string) => {
+  const redis = getRedisInstance();
+  const exists = await redis.exists(`${userId}:${token}`);
+  return exists === 1;
+};
+
+export const revokePrevRefreshToken = async (userId: string, token: string) => {
+  const redis = getRedisInstance();
+  await redis.del(`${userId}:${token}`);
+};
+
+export const rotateTokens = async (prevRefreshToken: string): Promise<ITokens> => {
+  const decoded = jwt.verify(prevRefreshToken, refreshSecret) as ITokenPayload;
+
+  const isValid = await verifyRedisToken(decoded.sub, prevRefreshToken);
+  if (!isValid) {
+    throw new Exception(HttpStatusCode.Unauthorized, 'Invalid refresh token');
+  }
+
+  await revokePrevRefreshToken(decoded.sub, prevRefreshToken);
+  const newTokens = generateTokens(decoded);
+  await storeRefreshToken(decoded.sub, newTokens.refreshToken);
+
+  return newTokens;
 };
