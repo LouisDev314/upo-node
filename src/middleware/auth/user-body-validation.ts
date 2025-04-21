@@ -6,7 +6,27 @@ import { RequestHandler } from 'express';
 import retrieveToken from '../../utils/retrieve-token';
 import { authenticateAccessToken } from '../../services/auth/jwt';
 
-export const registerBodyValidation: RequestHandler = (req, res, next) => {
+export const registerInitBodyValidation: RequestHandler = (req, res, next) => {
+  const otpSchema = UserZod.pick({
+    email: true,
+    password: true,
+  });
+  const parsed = otpSchema.safeParse(req.body);
+  if (!parsed.success) throw new Exception(HttpStatusCode.BadRequest, 'Invalid register init body', Object(parsed.error.errors));
+  req.body = parsed.data;
+  next();
+};
+
+export const otpBodyValidation: RequestHandler = (req, res, next) => {
+  const otpSchema = z.object({
+    otp: z.string().length(6, { message: 'otp is required' }),
+  });
+  const parsed = otpSchema.safeParse(req.body);
+  if (!parsed.success) throw new Exception(HttpStatusCode.BadRequest, 'Invalid otp body', Object(parsed.error.errors));
+  next();
+};
+
+export const registerCompleteBodyValidation: RequestHandler = (req, res, next) => {
   const RegisterSchema = UserZod.pick({
     username: true,
     email: true,

@@ -14,10 +14,12 @@ const env = {
   refreshExpiry: process.env.REFRESH_EXPIRY || '',
   redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
   redisTokenTTL: Number(process.env.REDIS_TOKEN_TTL) || 0,
-  smtpKey: process.env.SMTP_KEY || '',
+  otpExpiry: Number(process.env.OTP_EXPIRY) || 10,
+  smtpService: process.env.SMTP_SERVICE || '',
+  smtpUser: process.env.SMTP_USER || '',
+  smtpPassword: process.env.SMTP_PASSWORD || '',
   smtpHost: process.env.SMTP_HOST || '',
   smtpPort: Number(process.env.SMTP_PORT) || 587,
-  smtpUser: process.env.SMTP_USER || '',
 };
 
 export const getEnvConfig = () => {
