@@ -30,6 +30,7 @@ export default [
       'comma-dangle': [2, 'always-multiline'],
       'no-duplicate-imports': ['error', { includeExports: true }],
       '@typescript-eslint/no-explicit-any': ['error'],
+      'nonblock-statement-body-position': ['error', 'beside'],
     },
   },
 ];

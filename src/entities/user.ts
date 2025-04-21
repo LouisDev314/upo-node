@@ -3,9 +3,17 @@ import { z } from 'zod';
 import { zId, zodSchema } from '@zodyac/zod-mongoose';
 
 export const UserZod = z.object({
-  username: z.string().min(3).max(15).regex(/^[a-zA-Z0-9]+$/).unique(),
+  username: z
+    .string()
+    .min(3)
+    .max(15)
+    .regex(/^[a-zA-Z0-9]+$/)
+    .unique(),
   email: z.string().email().unique(),
-  password: z.string().min(8).regex(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()[\]{}])[a-zA-Z\d!@#$%^&*()[\]{}]{8,30}$/),
+  password: z
+    .string()
+    .min(8)
+    .regex(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()[\]{}])[a-zA-Z\d!@#$%^&*()[\]{}]{8,30}$/),
   // TODO: S3 string
   avatar: z.string().optional().default(''),
   tags: z.array(z.string()).optional().default([]),
