@@ -9,13 +9,20 @@ import {
 import { login, logout, refreshTokens, register, verifyEmail } from '../../../services/auth';
 import { IUser } from '../../../entities/user';
 import retrieveToken from '../../../utils/retrieve-token';
-import { verifyOTP } from '../../../services/smtp/otp';
+import { generateAndSendOTP, otpLimiter, verifyOTP } from '../../../services/smtp/otp';
 
 const authRouter: Router = Router();
 
-authRouter.post('/register/init', registerInitBodyValidation, async (req, res) => {
+authRouter.post('/register/init', registerInitBodyValidation, otpLimiter, async (req, res) => {
   const { email } = req.body as Pick<IUser, 'email'>;
   await verifyEmail(email);
+  await generateAndSendOTP(email);
+  return res.send_ok('OTP sent to email');
+});
+
+authRouter.post('/register/resend-otp', registerInitBodyValidation, otpLimiter, async (req, res) => {
+  const { email } = req.body as Pick<IUser, 'email'>;
+  await generateAndSendOTP(email);
   return res.send_ok('OTP sent to email');
 });
 

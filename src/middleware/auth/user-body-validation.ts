@@ -9,7 +9,6 @@ import { authenticateAccessToken } from '../../services/auth/jwt';
 export const registerInitBodyValidation: RequestHandler = (req, res, next) => {
   const otpSchema = UserZod.pick({
     email: true,
-    password: true,
   });
   const parsed = otpSchema.safeParse(req.body);
   if (!parsed.success) throw new Exception(HttpStatusCode.BadRequest, 'Invalid register init body', Object(parsed.error.errors));
@@ -18,7 +17,9 @@ export const registerInitBodyValidation: RequestHandler = (req, res, next) => {
 };
 
 export const otpBodyValidation: RequestHandler = (req, res, next) => {
-  const otpSchema = z.object({
+  const otpSchema = UserZod.pick({
+    email: true,
+  }).extend({
     otp: z.string().length(6, { message: 'otp is required' }),
   });
   const parsed = otpSchema.safeParse(req.body);

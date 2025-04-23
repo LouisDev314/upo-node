@@ -23,6 +23,9 @@ const exceptionHandler: ErrorRequestHandler = (err, req, res, next) => {
       case HttpStatusCode.UnprocessableEntity:
         res.send_unprocessableEntity(err.msg, err.data);
         break;
+      case HttpStatusCode.TooManyRequests:
+        res.send_tooManyRequests(err.msg, err.data);
+        break;
       default:
         logger.error(err.msg, err.data);
         res.send_internalServerError(err.msg, err.data);

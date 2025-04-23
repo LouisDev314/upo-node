@@ -12,20 +12,15 @@ import {
   verifyRedisToken,
 } from './jwt';
 import jwt from 'jsonwebtoken';
-import { generateAndSendOTP } from '../smtp/otp';
 
 export const verifyEmail = async (email: string) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new Exception(HttpStatusCode.Conflict, 'Email already registered');
-
-  await generateAndSendOTP(email);
 };
 
 export const register = async (username: string, email: string, password: string) => {
-  const existingUser = await User.findOne({
-    $or: [{ username }, { email }],
-  });
-  if (existingUser) throw new Exception(HttpStatusCode.Conflict, 'Username or email already exists');
+  const existingUser = await User.findOne({ username });
+  if (existingUser) throw new Exception(HttpStatusCode.Conflict, 'Username already exists');
 
   // TODO: might use JSEncrypt (RSA) to pass in password -> decrypt with key
   const hash = await bcrypt.hash(password, getEnvConfig().saltRounds);

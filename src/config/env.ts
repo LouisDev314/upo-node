@@ -18,8 +18,9 @@ const env = {
   smtpService: process.env.SMTP_SERVICE || '',
   smtpUser: process.env.SMTP_USER || '',
   smtpPassword: process.env.SMTP_PASSWORD || '',
+  smtpPort: process.env.SMTP_PORT || '587',
   smtpHost: process.env.SMTP_HOST || '',
-  smtpPort: Number(process.env.SMTP_PORT) || 587,
+  redirectUrl: process.env.REDIRECT_URL || 'http://localhost:3000',
 };
 
 export const getEnvConfig = () => {
