@@ -15,12 +15,13 @@ const env = {
   redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
   redisTokenTTL: Number(process.env.REDIS_TOKEN_TTL) || 0,
   otpExpiry: Number(process.env.OTP_EXPIRY) || 10,
-  smtpService: process.env.SMTP_SERVICE || '',
   smtpUser: process.env.SMTP_USER || '',
   smtpPassword: process.env.SMTP_PASSWORD || '',
   smtpPort: process.env.SMTP_PORT || '587',
   smtpHost: process.env.SMTP_HOST || '',
-  redirectUrl: process.env.REDIRECT_URL || 'http://localhost:3000',
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+  googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000',
 };
 
 export const getEnvConfig = () => {

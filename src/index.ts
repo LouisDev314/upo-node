@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-// import passport from 'passport';
+import passport from 'passport';
 import responser from 'responser';
 import morgan from 'morgan';
 import { Server } from 'http';
@@ -14,6 +14,8 @@ import exceptionHandler from './middleware/exception-handler';
 import { initWithCluster } from './services/cluster';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+// import passport google init
+import './services/auth/google';
 
 /* -------------------------Setup variables------------------------- */
 const { port } = getEnvConfig();
@@ -42,7 +44,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 app.use(responser);
-// app.use(passport.initialize());
+app.use(passport.initialize());
 
 app.use('/api', rootRouter);
 app.use(exceptionHandler);

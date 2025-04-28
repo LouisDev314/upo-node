@@ -20,7 +20,7 @@ export const generateAndSendOTP = async (email: string) => {
     await transporter.sendMail({
       from: smtpUser,
       to: email,
-      subject: `Email verification code ${otp}`,
+      subject: `Email verification code: ${otp}`,
       // text: `Your verification code is: ${otp}\nThis code will expire in 10 minutes.`,
       html: `Your verification code is <b>${otp}</b>.\n\nThis code will expire in 10 minutes.`,
     });

@@ -15,12 +15,13 @@ export interface ITokenPayload {
 
 const { accessSecret, accessExpiry, refreshSecret, refreshExpiry } = getEnvConfig();
 
-// FIXME
+// FIXME: remove @ts-ignore
 export const generateTokens = (tokenPayload: ITokenPayload) => {
   try {
     // Destructure to remove 'iat' and 'exp' if present
     // eslint-disable-next-line
     const { iat, exp, ...cleanPayload } = tokenPayload;
+
     return {
       // @ts-ignore
       accessToken: jwt.sign(cleanPayload, accessSecret, { expiresIn: accessExpiry }),
@@ -29,15 +30,6 @@ export const generateTokens = (tokenPayload: ITokenPayload) => {
     };
   } catch (err) {
     throw new Exception(HttpStatusCode.InternalServerError, 'Unable to sign tokens:', { err });
-  }
-};
-
-export const authenticateAccessToken = (token: string) => {
-  try {
-    return jwt.verify(token, accessSecret);
-  } catch (err) {
-    if (err instanceof Error && err.name.includes('Token')) throw new Exception(HttpStatusCode.Unauthorized, 'Invalid token');
-    throw new Exception(HttpStatusCode.InternalServerError, 'Unable to verify access token', { err });
   }
 };
 
